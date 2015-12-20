@@ -4,7 +4,6 @@ var defaultSettings = {
 	alarmName: "periodAlarm"
 };
 
-
 var currencyDataExchanger = (function($) {
 
 	var self = {};
@@ -70,6 +69,5 @@ var currencyDataExchanger = (function($) {
 	return self;
 })($);
 
-
-
 currencyDataExchanger.init(defaultSettings);
+
