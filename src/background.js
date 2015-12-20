@@ -1,42 +1,75 @@
-function createPeriodicEvent(){
-	chrome.alarms.create("getCurrencyData",{when: Date.now() + 900})
+var defaultSettings = {
+	periodDelay: 1000,
+	kantoAliorBankServerUrl: "https://kantor.aliorbank.pl/forex/json/current",
+	alarmName: "periodAlarm"
 };
 
-function gotDataFromServer(reponseFromServer){
-	var valueForSell = getCurrentValueForEuro(reponseFromServer.currencies);
-	chrome.browserAction.setBadgeText({text: valueForSell});
-};
 
-function onErrorAjaxHanlder(){
-	console.log("ERROR occured.");
-};
+var currencyDataExchanger = (function($) {
 
-function getCurrentValueForEuro(currencies){
-	for (var i = 0; i < currencies.length; i++) {
-		if(currencies[i].currency1 === "PLN" && 
-		   currencies[i].currency2 === "EUR")
-		{
-			return currencies[i].sell;
-		}
+	var self = {};
+
+	function setBadgeValue(value) {
+		chrome.browserAction.setBadgeText({
+			text: value
+		});
+	}
+
+	function gotDataFromServer(reponseFromServer) {
+		var valueForSell = getCurrentValueForEuro(reponseFromServer.currencies);
+		setBadgeValue(valueForSell);
 	};
-};
 
-function getCurrencies(){
-	$.ajax({
-	url : "https://kantor.aliorbank.pl/forex/json/current",
-	dataType "json",
-	method : "GET",
-	success : gotDataFromServer,
-	error : onErrorAjaxHanlder
-});
-};
+	function onErrorAjaxHanlder() {
+		setBadgeValue("error");
+	};
 
-function periodicEventHandler(alarm){
-  getCurrencies();
-  
-  createPeriodicEvent();
-};
+	function getCurrentValueForEuro(currencies) {
+		for (var i = 0; i < currencies.length; i++) {
+			if (currencies[i].currency1 === "PLN" &&
+				currencies[i].currency2 === "EUR") {
+				return currencies[i].sell;
+			}
+		};
+	};
 
-chrome.alarms.onAlarm.addListener(periodicEventHandler);
+	function periodicEventHandler(alarm) {
+		self.getCurrencies();
+		self.repeat();
+	};
 
-createPeriodicEvent();
+	function createDelayedAction(settings) {
+		chrome.alarms.create(defaultSettings.alarmName, {
+			when: Date.now() + defaultSettings.periodDelay
+		})
+	}
+
+
+	self.getCurrencies = function() {
+		$.ajax({
+			url: this.settings.kantoAliorBankServerUrl,
+			dataType: "json",
+			method: "GET",
+			success: gotDataFromServer,
+			error: onErrorAjaxHanlder
+		});
+	};
+	self.repeat = function() {
+		createDelayedAction(this.settings);
+	};
+
+	self.init = function(defaultSettings) {
+		this.settings = defaultSettings;
+
+		chrome.alarms.onAlarm.addListener(periodicEventHandler);
+
+		createDelayedAction(defaultSettings);
+	};
+
+
+	return self;
+})($);
+
+
+
+currencyDataExchanger.init(defaultSettings);
