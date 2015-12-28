@@ -4,7 +4,8 @@ var defaultSettings = {
 	alarmName: "periodAlarm"
 };
 
-var currencyDataExchanger = (function($) {
+var currencyDataExchanger;
+currencyDataExchanger = (function ($) {
 
 	var self = {};
 
@@ -19,7 +20,7 @@ var currencyDataExchanger = (function($) {
 		setBadgeValue(valueForSell);
 	};
 
-	function onErrorAjaxHanlder() {
+	function onErrorAjaxHaler() {
 		setBadgeValue("error");
 	};
 
@@ -29,7 +30,8 @@ var currencyDataExchanger = (function($) {
 				currencies[i].currency2 === "EUR") {
 				return currencies[i].sell;
 			}
-		};
+		}
+		;
 	};
 
 	function periodicEventHandler(alarm) {
@@ -44,20 +46,20 @@ var currencyDataExchanger = (function($) {
 	}
 
 
-	self.getCurrencies = function() {
+	self.getCurrencies = function () {
 		$.ajax({
 			url: this.settings.kantoAliorBankServerUrl,
 			dataType: "json",
 			method: "GET",
 			success: gotDataFromServer,
-			error: onErrorAjaxHanlder
+			error: onErrorAjaxHaler
 		});
 	};
-	self.repeat = function() {
+	self.repeat = function () {
 		createDelayedAction(this.settings);
 	};
 
-	self.init = function(defaultSettings) {
+	self.init = function (defaultSettings) {
 		this.settings = defaultSettings;
 
 		chrome.alarms.onAlarm.addListener(periodicEventHandler);
