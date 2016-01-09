@@ -1,33 +1,39 @@
 <!DOCTYPE html>
 <html class="no-js">
 <head>
-
+    <link href="/app-modules/style/settings.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
 
     <form>
-        <table>
-            <tbody>
-                <tr>
-                    <td>
-                        Refreshing period
-                    </td>
-                    <td>
-                        <input id="refreshingPeriod"
-                               name="refreshingPeriod"
-                               type="text"
-                               data-val="true"
-                               data-val-number
-                               >
-                        <span class="field-validation-valid"
-                              data-valmsg-for="refreshingPeriod"
-                              data-valmsg-replace="false"></span>
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
+        <div class="setting-label">
+            Refreshing period:
+        </div>
+        <div>
+            <div>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <input id="refreshingPeriod"
+                                   name="refreshingPeriod"
+                                   class="setting-input"
+                                   type="text"
+                                   data-val="true"
+                                   data-val-number>
+                        </td>
+                        <td>
+                            <span>(ms)</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <span class="field-validation-valid"
+                  data-valmsg-for="refreshingPeriod"
+                  data-valmsg-replace="true"></span>
+        </div>
     </form>
     <script src="/external-scripts/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/external-scripts/jquery.validate.js" type="text/javascript" charset="utf-8"></script>

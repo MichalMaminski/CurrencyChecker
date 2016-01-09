@@ -28,7 +28,7 @@ currencyDataExchanger = (function ($) {
         for (var i = 0; i < currencies.length; i++) {
             if (currencies[i].currency1 === "PLN" &&
 				currencies[i].currency2 === "EUR") {
-                return currencies[i].sell;
+                return currencies[i].buy;
             }
         }
         ;
@@ -66,7 +66,7 @@ currencyDataExchanger = (function ($) {
     };
 
     self.onRefreshingPeriodChange = function (refreshingPeriod) {
-        console.log(refreshingPeriod);
+        self.settings.periodDelay = refreshingPeriod;
     }
     return self;
 })($);

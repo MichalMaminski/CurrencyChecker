@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app\app-modules\js\settings.js" />
+    <Content Include="app\app-modules\style\settings.css" />
     <Content Include="app\app-modules\views\settings.html" />
     <Content Include="app\background.js" />
     <Content Include="app\external-scripts\jquery-2.1.4.min.js" />
