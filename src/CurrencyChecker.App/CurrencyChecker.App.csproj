@@ -39,22 +39,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="app\img\icon.png" />
-    <Content Include="app\popup.html" />
-    <Content Include="app\popup.js" />
+    <Content Include="background.js" />
+    <Content Include="external-scripts\jquery-2.1.4.min.js" />
+    <Content Include="main-icon.png" />
     <Content Include="Properties\build\lib\Ionic.Zip.DLL" />
     <Content Include="Properties\build\lib\MSBuild.ExtensionPack.dll" />
-    <Content Include="screenshots\screenshot.png" />
-    <Content Include="index.htm" />
     <Content Include="Properties\build\ligershark.chrome.targets" />
-    <Content Include="screenshots\readme.txt" />
-    <None Include="scripts\_references.js" />
+    <Content Include="app-modules\views\settings.html" />
+    <Content Include="app-modules\js\settings.js" />
+    <Content Include="manifest.json" />
+    <Content Include="packages.config" />
+    <Content Include="external-scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="external-scripts\jquery.validate.unobtrusive.min.js" />
+    <None Include="external-scripts\jquery.validate-vsdoc.js" />
+    <Content Include="external-scripts\jquery.validate.js" />
+    <Content Include="external-scripts\jquery.validate.min.js" />
     <None Include="scripts\chrome-api-vsdoc.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\manifest.json" />
+    <Folder Include="scripts\libs\" />
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
