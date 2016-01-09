@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyChecker.App", "CurrencyChecker.App\CurrencyChecker.App.csproj", "{9D141603-1A9D-4EEC-82D8-C473EA436839}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyChecker.Chrome.App", "CurrencyChecker.Chrome.App\CurrencyChecker.Chrome.App.csproj", "{05DA3E2F-981E-4F47-A8DD-4000A988F78F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9D141603-1A9D-4EEC-82D8-C473EA436839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D141603-1A9D-4EEC-82D8-C473EA436839}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D141603-1A9D-4EEC-82D8-C473EA436839}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D141603-1A9D-4EEC-82D8-C473EA436839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05DA3E2F-981E-4F47-A8DD-4000A988F78F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05DA3E2F-981E-4F47-A8DD-4000A988F78F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05DA3E2F-981E-4F47-A8DD-4000A988F78F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05DA3E2F-981E-4F47-A8DD-4000A988F78F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,7 +42,7 @@ currencyDataExchanger = (function ($) {
     function createDelayedAction(settings) {
         chrome.alarms.create(defaultSettings.alarmName, {
             when: Date.now() + defaultSettings.periodDelay
-        })
+        });
     }
 
 

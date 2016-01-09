@@ -7,12 +7,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9D141603-1A9D-4EEC-82D8-C473EA436839}</ProjectGuid>
+    <ProjectGuid>{05DA3E2F-981E-4F47-A8DD-4000A988F78F}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CurrencyChecker.App</RootNamespace>
-    <AssemblyName>CurrencyChecker.App</AssemblyName>
+    <RootNamespace>CurrencyChecker.Chrome.App</RootNamespace>
+    <AssemblyName>CurrencyChecker.Chrome.App</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -39,11 +39,31 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="app\app-modules\js\settings.js" />
+    <Content Include="app\app-modules\views\settings.html" />
+    <Content Include="app\background.js" />
+    <Content Include="app\external-scripts\jquery-2.1.4.min.js" />
+    <None Include="app\external-scripts\jquery.validate-vsdoc.js" />
+    <Content Include="app\external-scripts\jquery.validate.js" />
+    <Content Include="app\external-scripts\jquery.validate.min.js" />
+    <Content Include="app\external-scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="app\external-scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="app\manifest.json" />
+    <None Include="app\scripts\chrome-api-vsdoc.js" />
+    <Content Include="app\main-icon.png" />
     <Content Include="Properties\build\lib\Ionic.Zip.DLL" />
     <Content Include="Properties\build\lib\MSBuild.ExtensionPack.dll" />
+    <Content Include="screenshots\screenshot.png" />
+    <Content Include="index.htm" />
     <Content Include="Properties\build\ligershark.chrome.targets" />
+    <Content Include="screenshots\readme.txt" />
+    <Content Include="app\packages.config" />
+    <None Include="scripts\_references.js" />
+    <None Include="scripts\chrome-api-vsdoc.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="app\scripts\libs\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
