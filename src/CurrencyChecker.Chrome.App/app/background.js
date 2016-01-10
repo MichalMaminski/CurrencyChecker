@@ -79,72 +79,96 @@ var currencyDataExchanger = (function ($) {
 })($);
 
 var iconTicker = (function (canvasElement) {
-    var canvasHeight = 19;
-    var canvasWidth = 19;
-    var canvas = canvasElement;
-    var firstTextPosition = canvasWidth;
-    var secondTextPosition = canvasWidth;
-    var currencyTextWidth = 38;
-    var textShiftStep = 1;
-    var self = this;
-    var canPrintFirst = true;
-    var canPrintSecond = false;
+    var self = {};
+    //CANVAS settings
+    self.canvasHeight = 19;
+    self.canvasWidth = 19;
+    self.canvas = canvasElement;
+    self.firstTextXPosition = self.canvasWidth;
+    self.secondTextXPosition = self.canvasWidth;
 
-    var spaceBetweenTicks = 6;
+    //ticker text settings
+    self.textYPosition = -1;
+    self.currencyTextWidth = 38;
+    self.textShiftStep = 0.25;
+    self.intervalInMs = 15;
+    self.spaceBetweenTicks = 6;
+    self.pointWhereShowingTextIsAllow = ((self.canvasWidth - self.spaceBetweenTicks) - self.currencyTextWidth);
 
-    function redrawIcon(value) {
-        var context = canvas.getContext('2d');
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
+    //ticker texts state helpers
+    self.canPrintFirst = true;
+    self.canPrintSecond = false;
+
+    function setCavasContextProperties(context) {
+        context.clearRect(0, 0, self.canvasWidth, self.canvasHeight);
         context.fillStyle = "#262626";
         context.fillRect(0, 0, 19, 19);
-
         context.textAlign = "left";
         context.textBaseline = "top";
-        //chrome.browserAction.setBadgeBackgroundColor({ color: "green" });
-        chrome.browserAction.setBadgeText({ text: "SELL" });
-
-
         context.fillStyle = "white";
         context.font = "13px Arial";
+    }
 
-        if (canPrintFirst) {
-            context.fillText("4,1234", firstTextPosition, -1);
-            firstTextPosition -= textShiftStep;
-        }
+    function setBadge() {
+        chrome.browserAction.setBadgeBackgroundColor({ color: "#00FF00" });
+        chrome.browserAction.setBadgeText({ text: "SELL" });
+    }
 
-        if (firstTextPosition < ((canvasWidth - spaceBetweenTicks) - currencyTextWidth)) {
-            canPrintSecond = true;
+    function printTickerText(canvasContext, canPrint, tickerText, textXPosition) {
+        if (canPrint) {
+            canvasContext.fillText(tickerText, textXPosition, self.textYPosition);
+            textXPosition -= self.textShiftStep;
         }
+        return textXPosition;
+    }
 
-        if (firstTextPosition < 0 - currencyTextWidth) {
-            firstTextPosition = canvasWidth;
-            canPrintFirst = false;
+    function checkIfTextCanBePrinted(canPrintText ,textXPosition) {
+        if (textXPosition < self.pointWhereShowingTextIsAllow) {
+            canPrintText = true;
         }
+        return canPrintText;
+    }
 
-        if (canPrintSecond) {
-            context.fillText("4,1234", secondTextPosition, -1);
-            secondTextPosition -= textShiftStep;
+    function resetTextXPosition(canPrint, textXPosition) {
+        if (textXPosition < 0 - self.currencyTextWidth) {
+            textXPosition = self.canvasWidth;
+            canPrint = false;
         }
+        return {
+            canPrint: canPrint,
+            textXPosition: textXPosition
+        };
+    }
 
-        if (secondTextPosition < ((canvasWidth - spaceBetweenTicks) - currencyTextWidth)) {
-            canPrintFirst = true;
-        }
+    function redrawIcon() {
+        var context = self.canvas.getContext('2d');
+        setCavasContextProperties(context);
+        setBadge();
 
-        if (secondTextPosition < 0 - currencyTextWidth) {
-            secondTextPosition = canvasWidth;
-            canPrintSecond = false;
-        }
+        //Logic for first ticker text
+        self.firstTextXPosition = printTickerText(context, self.canPrintFirst, "4,2222", self.firstTextXPosition);
+        self.canPrintSecond = checkIfTextCanBePrinted(self.canPrintSecond,self.firstTextXPosition);
+
+        var textStateForFirstTextTicker = resetTextXPosition(self.canPrintFirst, self.firstTextXPosition);
+        self.canPrintFirst = textStateForFirstTextTicker.canPrint;
+        self.firstTextXPosition = textStateForFirstTextTicker.textXPosition;
+
+        //Logic for second ticker text
+        self.secondTextXPosition = printTickerText(context, self.canPrintSecond, "4,2222", self.secondTextXPosition);
+        self.canPrintFirst = checkIfTextCanBePrinted(self.canPrintFirst, self.secondTextXPosition);
+
+        var textStateForSecondTextTicker = resetTextXPosition(self.canPrintSecond, self.secondTextXPosition);
+        self.canPrintSecond = textStateForSecondTextTicker.canPrint;
+        self.secondTextXPosition = textStateForSecondTextTicker.textXPosition;
 
         chrome.browserAction.setIcon({
-            imageData: context.getImageData(0, 0, 19, 19)
+            imageData: context.getImageData(0, 0, self.canvasWidth, self.canvasHeight)
         });
     };
 
     function init(currencyDataExchanger) {
         self.currencyDataExchanger = currencyDataExchanger;
-        setInterval(redrawIcon, 80);
-
-
+        setInterval(redrawIcon, self.intervalInMs);
     };
 
     return {
