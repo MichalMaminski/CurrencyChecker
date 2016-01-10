@@ -8,17 +8,18 @@ var canvasElement = document.createElement("canvas");
 canvasElement.width = 19;
 canvasElement.height = 19;
 
+var currencyState = {
+    euroToPln: "N/A"
+};
+
 var currencyDataExchanger = (function ($) {
 
     var self = {};
-    var counter = 1;
     function setBadgeValue(value) {
-        //chrome.browserAction.setBadgeText({
-        //    text: value
-        //});
-
-        self.ticker.redraw();
-
+        if (!self.ticker.STARTED) {
+            self.ticker.init(currencyState);
+        }
+        self.currencyState.euroToPln = value;
     }
 
     function gotDataFromServer(reponseFromServer) {
@@ -65,9 +66,10 @@ var currencyDataExchanger = (function ($) {
         createDelayedAction(this.settings);
     };
 
-    self.init = function (defaultSettings, ticker) {
-        this.ticker = ticker;
-        this.settings = defaultSettings;
+    self.init = function (defaultSettings, currencyState, ticker) {
+        self.ticker = ticker;
+        self.settings = defaultSettings;
+        self.currencyState = currencyState;
         chrome.alarms.onAlarm.addListener(periodicEventHandler);
         createDelayedAction(defaultSettings);
     };
@@ -80,6 +82,7 @@ var currencyDataExchanger = (function ($) {
 
 var iconTicker = (function (canvasElement) {
     var self = {};
+    self.STARTED = false;
     //CANVAS settings
     self.canvasHeight = 19;
     self.canvasWidth = 19;
@@ -122,7 +125,7 @@ var iconTicker = (function (canvasElement) {
         return textXPosition;
     }
 
-    function checkIfTextCanBePrinted(canPrintText ,textXPosition) {
+    function checkIfTextCanBePrinted(canPrintText, textXPosition) {
         if (textXPosition < self.pointWhereShowingTextIsAllow) {
             canPrintText = true;
         }
@@ -140,21 +143,21 @@ var iconTicker = (function (canvasElement) {
         };
     }
 
-    function redrawIcon() {
+    self.redrawIcon = function () {
         var context = self.canvas.getContext('2d');
         setCavasContextProperties(context);
         setBadge();
 
         //Logic for first ticker text
-        self.firstTextXPosition = printTickerText(context, self.canPrintFirst, "4,2222", self.firstTextXPosition);
-        self.canPrintSecond = checkIfTextCanBePrinted(self.canPrintSecond,self.firstTextXPosition);
+        self.firstTextXPosition = printTickerText(context, self.canPrintFirst, self.currencyState.euroToPln, self.firstTextXPosition);
+        self.canPrintSecond = checkIfTextCanBePrinted(self.canPrintSecond, self.firstTextXPosition);
 
         var textStateForFirstTextTicker = resetTextXPosition(self.canPrintFirst, self.firstTextXPosition);
         self.canPrintFirst = textStateForFirstTextTicker.canPrint;
         self.firstTextXPosition = textStateForFirstTextTicker.textXPosition;
 
         //Logic for second ticker text
-        self.secondTextXPosition = printTickerText(context, self.canPrintSecond, "4,2222", self.secondTextXPosition);
+        self.secondTextXPosition = printTickerText(context, self.canPrintSecond, self.currencyState.euroToPln, self.secondTextXPosition);
         self.canPrintFirst = checkIfTextCanBePrinted(self.canPrintFirst, self.secondTextXPosition);
 
         var textStateForSecondTextTicker = resetTextXPosition(self.canPrintSecond, self.secondTextXPosition);
@@ -166,18 +169,13 @@ var iconTicker = (function (canvasElement) {
         });
     };
 
-    function init(currencyDataExchanger) {
-        self.currencyDataExchanger = currencyDataExchanger;
-        setInterval(redrawIcon, self.intervalInMs);
+    self.init = function (currencyState) {
+        self.currencyState = currencyState;
+        setInterval(self.redrawIcon, self.intervalInMs);
+        self.STARTED = true;
     };
-
-    return {
-        redraw: redrawIcon,
-        init: init
-    };
+    return self;
 })(canvasElement);
 
+currencyDataExchanger.init(defaultSettings, currencyState, iconTicker);
 
-
-currencyDataExchanger.init(defaultSettings, iconTicker);
-iconTicker.init(currencyDataExchanger);
