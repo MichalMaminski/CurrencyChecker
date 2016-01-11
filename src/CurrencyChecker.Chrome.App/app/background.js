@@ -20,6 +20,7 @@ var currencyDataExchanger = (function ($) {
             self.ticker.init(currencyState);
         }
         self.currencyState.euroToPln = value;
+
     }
 
     function gotDataFromServer(reponseFromServer) {
@@ -29,6 +30,9 @@ var currencyDataExchanger = (function ($) {
 
     function onErrorAjaxHaler() {
         setBadgeValue("error");
+        chrome.browserAction.setIcon({
+            path: "/assets/main-icon.png"
+        });
     };
 
     function getCurrentValueForEuro(currencies) {

@@ -51,7 +51,8 @@
     <Content Include="app\external-scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="app\manifest.json" />
     <None Include="app\scripts\chrome-api-vsdoc.js" />
-    <Content Include="app\main-icon.png" />
+    <Content Include="app\assets\main-icon.png" />
+    <Content Include="app\assets\logo.png" />
     <Content Include="Properties\build\lib\Ionic.Zip.DLL" />
     <Content Include="Properties\build\lib\MSBuild.ExtensionPack.dll" />
     <Content Include="screenshots\screenshot.png" />
