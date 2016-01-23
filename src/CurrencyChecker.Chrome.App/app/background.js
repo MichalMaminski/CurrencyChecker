@@ -1,7 +1,12 @@
-var defaultSettings = {
+var applicationSettings = {
     periodDelay: 1000,
     kantoAliorBankServerUrl: "https://kantor.aliorbank.pl/forex/json/current",
     alarmName: "periodAlarm"
+};
+
+var defaultUserSettings = {
+    refreshingPeriod: 1000,
+    tickerMode: "SELL"
 };
 
 var canvasElement = document.createElement("canvas");
@@ -12,17 +17,46 @@ var currencyState = {
     euroToPln: "N/A",
 };
 
-var currencyDataExchanger = (function ($) {
+var userStorageManager = (function (userStorage, defaultUserSettings) {
+    var self = this;
+    var storage = userStorage;
+    var defaultUserSettings = defaultUserSettings;
+    
+    self.loadUserSettings = function (callback) {
+        storage.sync.get("user-settings", function (userSettings) {
+            if ($.isEmptyObject(userSettings)) {
+                self.saveUserSettings(defaultUserSettings);
+                callback(defaultUserSettings);
+            }
+            else {
+                callback(userSettings["user-settings"]);
+            }
+        })
+    };
 
+    self.saveUserSettings = function (userSettings) {
+        storage.sync.set({
+            "user-settings": userSettings
+        });
+    };
+
+    self.userSettingsChanged = function (userSettings) {
+        
+        self.saveUserSettings(userSettings);
+    };
+    return self;
+})(chrome.storage, defaultUserSettings);
+
+var currencyDataExchanger = (function ($) {
     var self = {};
     function setBadgeValue(value) {
-        if (!self.ticker.STARTED) {
-            self.ticker.init(currencyState);
-        }
         self.currencyState.euroToPln = value;
     }
 
     function gotDataFromServer(reponseFromServer) {
+        if (!self.ticker.STARTED) {
+            self.ticker.init(currencyState, self.settings.userSettings.tickerMode);
+        }
         var valueForSell = getCurrentValueForEuro(reponseFromServer.currencies);
         setBadgeValue(valueForSell);
     };
@@ -49,15 +83,20 @@ var currencyDataExchanger = (function ($) {
     };
 
     function createDelayedAction(settings) {
-        chrome.alarms.create(defaultSettings.alarmName, {
-            when: Date.now() + defaultSettings.periodDelay
+        chrome.alarms.create(settings.applicationSettings.alarmName, {
+            when: Date.now() + settings.userSettings.refreshingPeriod
         });
     }
 
+    function userSettingsChanged() {
+        self.storageManager.userSettingsChanged(self.settings.userSettings);
+        self.ticker.userSettingsChanged(self.settings.userSettings);
+    }
 
     self.getCurrencies = function () {
+        
         $.ajax({
-            url: this.settings.kantoAliorBankServerUrl,
+            url: this.settings.applicationSettings.kantoAliorBankServerUrl,
             dataType: "json",
             method: "GET",
             success: gotDataFromServer,
@@ -65,26 +104,35 @@ var currencyDataExchanger = (function ($) {
         });
     };
     self.repeat = function () {
-        createDelayedAction(this.settings);
+        createDelayedAction(self.settings);
     };
 
-    self.init = function (defaultSettings, currencyState, ticker) {
+    self.init = function (applicationSettings, currencyState, ticker, storageManager) {
         self.ticker = ticker;
-        self.settings = defaultSettings;
+        self.storageManager = storageManager;
         self.currencyState = currencyState;
-        chrome.alarms.onAlarm.addListener(periodicEventHandler);
-        createDelayedAction(defaultSettings);
+        self.settings = {
+            applicationSettings: applicationSettings
+
+        };
+        storageManager.loadUserSettings(function (userSettings) {
+            chrome.alarms.onAlarm.addListener(periodicEventHandler);
+            self.settings.userSettings = userSettings;
+            createDelayedAction(self.settings);
+        });
     };
 
     self.getCurrentDisplayTickerMode = function () {
-        return self.ticker.mode;
+        return self.settings.userSettings.tickerMode;
     }
     self.onRefreshingPeriodChanged = function (refreshingPeriod) {
-        self.settings.periodDelay = refreshingPeriod;
+        self.settings.userSettings.refreshingPeriod = refreshingPeriod;
+        userSettingsChanged();
     }
 
     self.onTickerModeChanged = function (tickerDisplayMode) {
-        self.ticker.mode = tickerDisplayMode;
+        self.settings.userSettings.tickerMode = tickerDisplayMode;
+        userSettingsChanged();
     }
     return self;
 })($);
@@ -110,7 +158,6 @@ var iconTicker = (function (canvasElement) {
     //ticker texts state helpers
     self.canPrintFirst = true;
     self.canPrintSecond = false;
-    self.mode = "SELL";
 
     function setCavasContextProperties(context) {
         context.clearRect(0, 0, self.canvasWidth, self.canvasHeight);
@@ -153,6 +200,10 @@ var iconTicker = (function (canvasElement) {
         };
     }
 
+    self.userSettingsChanged = function (userSettings) {
+        self.mode = userSettings.tickerMode;
+    }
+
     self.redrawIcon = function () {
         var context = self.canvas.getContext('2d');
         setCavasContextProperties(context);
@@ -179,7 +230,8 @@ var iconTicker = (function (canvasElement) {
         });
     };
 
-    self.init = function (currencyState) {
+    self.init = function (currencyState, tickerMode) {
+        self.mode = tickerMode;
         self.currencyState = currencyState;
         setInterval(self.redrawIcon, self.intervalInMs);
         self.STARTED = true;
@@ -187,5 +239,5 @@ var iconTicker = (function (canvasElement) {
     return self;
 })(canvasElement);
 
-currencyDataExchanger.init(defaultSettings, currencyState, iconTicker);
+currencyDataExchanger.init(applicationSettings, currencyState, iconTicker, userStorageManager);
 

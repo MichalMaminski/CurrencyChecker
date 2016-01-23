@@ -1,6 +1,6 @@
 var backgroundPage = chrome.extension.getBackgroundPage();
 var currencyDataExchanger = backgroundPage.currencyDataExchanger;
-var currentRefreshingPeriod = currencyDataExchanger.settings.periodDelay;
+var currentRefreshingPeriod = currencyDataExchanger.settings.userSettings.refreshingPeriod;
 
 
 var radioButtonsSelector = "input:radio[name='displayTickerMode']";

@@ -18,6 +18,7 @@
   },
   "permissions": [
     "alarms",
-    "https://kantor.aliorbank.pl/?"
+    "https://kantor.aliorbank.pl/?",
+    "storage"
   ]
 }
