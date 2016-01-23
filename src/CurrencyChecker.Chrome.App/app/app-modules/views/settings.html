@@ -14,19 +14,19 @@
             <div>
                 <table>
                     <tbody>
-                    <tr>
-                        <td>
-                            <input id="refreshingPeriod"
-                                   name="refreshingPeriod"
-                                   class="setting-input"
-                                   type="text"
-                                   data-val="true"
-                                   data-val-number>
-                        </td>
-                        <td>
-                            <span>(ms)</span>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <input id="refreshingPeriod"
+                                       name="refreshingPeriod"
+                                       class="setting-input"
+                                       type="text"
+                                       data-val="true"
+                                       data-val-number>
+                            </td>
+                            <td>
+                                <span>(ms)</span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -34,6 +34,33 @@
                   data-valmsg-for="refreshingPeriod"
                   data-valmsg-replace="true"></span>
         </div>
+
+        <div class="display-settings-container">
+            <div>Ticker display type:</div>
+            <table>
+                <thead>
+                    <tr class="center-content">
+                        <th>BUY</th>
+                        <th>
+                            SELL
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr class="center-content">
+                        <td>
+                            <input type="radio" name="displayType" value="buy" />
+
+                        </td>
+                        <td>
+                            <input type="radio" name="displayType" value="sell" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </form>
     <script src="/external-scripts/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/external-scripts/jquery.validate.js" type="text/javascript" charset="utf-8"></script>

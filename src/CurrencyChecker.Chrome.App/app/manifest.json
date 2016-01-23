@@ -3,7 +3,7 @@
   "name": "Currency Checker",
   "version": "1.0.0.0",
   "description": "This application allows to check current value for EURO currency from kantor alior bank.",
-  "icons": [ { "128": "/assets/logo.png" } ],
+  "icons": { "128": "/assets/logo.png" },
   "author": "Michal Maminski",
   "background": {
     "persistent": false,

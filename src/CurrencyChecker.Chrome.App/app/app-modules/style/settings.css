@@ -11,6 +11,26 @@
     color: darkslateblue;
 }
 
+.center-content {
+    text-align: center;
+}
+
+.display-settings-container table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px rgba(158, 158, 158, 0.42) solid;
+}
+
+.display-settings-container thead tr {
+    background-color: rgba(0, 0, 0, 0.35);
+    color: white;
+    height: 35px;
+}
+
+    .display-settings-container tr th:first-child, td:first-child {
+        border-right: 1px rgba(117, 114, 106, 0.33) solid;
+    }
+
 .field-validation-error {
     color: red;
 }
