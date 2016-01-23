@@ -21,7 +21,7 @@ var userStorageManager = (function (userStorage, defaultUserSettings) {
     var self = this;
     var storage = userStorage;
     var defaultUserSettings = defaultUserSettings;
-    
+
     self.loadUserSettings = function (callback) {
         storage.sync.get("user-settings", function (userSettings) {
             if ($.isEmptyObject(userSettings)) {
@@ -41,7 +41,7 @@ var userStorageManager = (function (userStorage, defaultUserSettings) {
     };
 
     self.userSettingsChanged = function (userSettings) {
-        
+
         self.saveUserSettings(userSettings);
     };
     return self;
@@ -82,7 +82,7 @@ var currencyDataExchanger = (function ($) {
         self.repeat();
     };
 
-    function createDelayedAction(settings) {
+    function runCurrencyCheckingLogic(settings) {
         chrome.alarms.create(settings.applicationSettings.alarmName, {
             when: Date.now() + settings.userSettings.refreshingPeriod
         });
@@ -94,7 +94,7 @@ var currencyDataExchanger = (function ($) {
     }
 
     self.getCurrencies = function () {
-        
+
         $.ajax({
             url: this.settings.applicationSettings.kantoAliorBankServerUrl,
             dataType: "json",
@@ -104,7 +104,7 @@ var currencyDataExchanger = (function ($) {
         });
     };
     self.repeat = function () {
-        createDelayedAction(self.settings);
+        runCurrencyCheckingLogic(self.settings);
     };
 
     self.init = function (applicationSettings, currencyState, ticker, storageManager) {
@@ -113,12 +113,12 @@ var currencyDataExchanger = (function ($) {
         self.currencyState = currencyState;
         self.settings = {
             applicationSettings: applicationSettings
-
         };
         storageManager.loadUserSettings(function (userSettings) {
             chrome.alarms.onAlarm.addListener(periodicEventHandler);
             self.settings.userSettings = userSettings;
-            createDelayedAction(self.settings);
+            runCurrencyCheckingLogic(self.settings);
+            self.getCurrencies();
         });
     };
 
@@ -149,7 +149,7 @@ var iconTicker = (function (canvasElement) {
 
     //ticker text settings
     self.textYPosition = -1;
-    self.currencyTextWidth = 38;
+    self.currencyTextWidth  = 38;
     self.textShiftStep = 0.25;
     self.intervalInMs = 15;
     self.spaceBetweenTicks = 6;
@@ -176,6 +176,9 @@ var iconTicker = (function (canvasElement) {
 
     function printTickerText(canvasContext, canPrint, tickerText, textXPosition) {
         if (canPrint) {
+            var metrics = context.measureText(tickerText);
+            var width = metrics.width;
+
             canvasContext.fillText(tickerText, textXPosition, self.textYPosition);
             textXPosition -= self.textShiftStep;
         }
