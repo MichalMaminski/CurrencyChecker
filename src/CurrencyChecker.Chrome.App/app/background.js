@@ -9,7 +9,7 @@ canvasElement.width = 19;
 canvasElement.height = 19;
 
 var currencyState = {
-    euroToPln: "N/A"
+    euroToPln: "N/A",
 };
 
 var currencyDataExchanger = (function ($) {
@@ -20,7 +20,6 @@ var currencyDataExchanger = (function ($) {
             self.ticker.init(currencyState);
         }
         self.currencyState.euroToPln = value;
-
     }
 
     function gotDataFromServer(reponseFromServer) {
@@ -39,10 +38,9 @@ var currencyDataExchanger = (function ($) {
         for (var i = 0; i < currencies.length; i++) {
             if (currencies[i].currency1 === "PLN" &&
 				currencies[i].currency2 === "EUR") {
-                return currencies[i].buy;
+                return currencies[i][self.ticker.mode.toLowerCase()];
             }
-        }
-        ;
+        };
     };
 
     function periodicEventHandler(alarm) {
@@ -78,8 +76,15 @@ var currencyDataExchanger = (function ($) {
         createDelayedAction(defaultSettings);
     };
 
-    self.onRefreshingPeriodChange = function (refreshingPeriod) {
+    self.getCurrentDisplayTickerMode = function () {
+        return self.ticker.mode;
+    }
+    self.onRefreshingPeriodChanged = function (refreshingPeriod) {
         self.settings.periodDelay = refreshingPeriod;
+    }
+
+    self.onTickerModeChanged = function (tickerDisplayMode) {
+        self.ticker.mode = tickerDisplayMode;
     }
     return self;
 })($);
@@ -105,6 +110,7 @@ var iconTicker = (function (canvasElement) {
     //ticker texts state helpers
     self.canPrintFirst = true;
     self.canPrintSecond = false;
+    self.mode = "SELL";
 
     function setCavasContextProperties(context) {
         context.clearRect(0, 0, self.canvasWidth, self.canvasHeight);
@@ -116,9 +122,9 @@ var iconTicker = (function (canvasElement) {
         context.font = "13px Arial";
     }
 
-    function setBadge() {
+    function setBadge(tickerDisplayMode) {
         chrome.browserAction.setBadgeBackgroundColor({ color: "#00FF00" });
-        chrome.browserAction.setBadgeText({ text: "SELL" });
+        chrome.browserAction.setBadgeText({ text: tickerDisplayMode });
     }
 
     function printTickerText(canvasContext, canPrint, tickerText, textXPosition) {
@@ -150,7 +156,7 @@ var iconTicker = (function (canvasElement) {
     self.redrawIcon = function () {
         var context = self.canvas.getContext('2d');
         setCavasContextProperties(context);
-        setBadge();
+        setBadge(self.mode);
 
         //Logic for first ticker text
         self.firstTextXPosition = printTickerText(context, self.canPrintFirst, self.currencyState.euroToPln, self.firstTextXPosition);
