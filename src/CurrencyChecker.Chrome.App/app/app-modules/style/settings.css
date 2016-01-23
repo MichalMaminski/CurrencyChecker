@@ -27,9 +27,9 @@
     height: 35px;
 }
 
-    .display-settings-container tr th:first-child, td:first-child {
-        border-right: 1px rgba(117, 114, 106, 0.33) solid;
-    }
+.display-settings-container tr th:first-child, .display-settings-container tr td:first-child {
+    border-right: 1px rgba(117, 114, 106, 0.33) solid;
+}
 
 .field-validation-error {
     color: red;
