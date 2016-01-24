@@ -176,9 +176,6 @@ var iconTicker = (function (canvasElement) {
 
     function printTickerText(canvasContext, canPrint, tickerText, textXPosition) {
         if (canPrint) {
-            var metrics = context.measureText(tickerText);
-            var width = metrics.width;
-
             canvasContext.fillText(tickerText, textXPosition, self.textYPosition);
             textXPosition -= self.textShiftStep;
         }
